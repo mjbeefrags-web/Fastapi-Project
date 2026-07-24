@@ -49,7 +49,7 @@ class Login(BaseModel):
 
 
 class Token(BaseModel):
-    access_token:str
+    token:str # access_
     token_type:str
 
 
