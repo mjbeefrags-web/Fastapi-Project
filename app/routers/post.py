@@ -2,8 +2,9 @@ from fastapi import FastAPI , Depends , HTTPException , status , Response , APIR
 from sqlalchemy.orm import Session
 from typing import List , Optional
 
-from .. import oauth2, schemas
+from .. import oauth2
 from .. import models
+from .. import schemas
 from ..database import get_db
 from sqlalchemy import  func
 

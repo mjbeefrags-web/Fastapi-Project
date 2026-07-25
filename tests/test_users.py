@@ -1,21 +1,9 @@
-from .. import schemas
+from app import schemas
 import pytest
-from ..config import settings
+from app.config import settings
 from jose import jwt
 
-@pytest.fixture
-def test_user(client):
-    user_data= {"email":"dylr540@gmail.com", 
-                "password":"mjbee123"}
 
-    res = client.post("/users/" , json=user_data)
-
-
-    assert res.status_code == 201
-    new_user = res.json()
-    new_user["password"]=user_data["password"] 
-    return new_user
-    
 
 
 def test_create_user(client):

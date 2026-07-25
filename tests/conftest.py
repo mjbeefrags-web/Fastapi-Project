@@ -1,20 +1,20 @@
 from fastapi.testclient import TestClient
-from ..main import app
-from ..schemas import UserOut
-from ..database import get_db
+from app.main import app
+from app.schemas import UserOut
+from app.database import get_db
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from ..config import settings
-from ..database import Base
+from app.config import settings
+from app.database import Base
 import pytest
 
-from .. import schemas
+from app import schemas
 import pytest
-from ..config import settings
+from app.config import settings
 from jose import jwt
-from ..oauth2 import create_access_token
-from .. import models
+from app.oauth2 import create_access_token
+from app import models
 
 SQLALCHEMY_DATABSE_URL=f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 engine= create_engine(SQLALCHEMY_DATABSE_URL)

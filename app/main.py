@@ -1,11 +1,9 @@
 from fastapi import FastAPI
 
-from .routers import auth, post
+from .routers import auth, post,vote,user
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import user
 from .database import engine , sessionLocal,get_db
 from . import models
-from .routers import vote
 
 models.Base.metadata.create_all(bind=engine)
 origins=["*"]
