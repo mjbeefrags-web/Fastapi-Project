@@ -1,99 +1,59 @@
-🚀 FastAPI Backend Project
+# Nocturne
 
-A modern backend API built with FastAPI, featuring authentication, database integration, and modular architecture. This project demonstrates real-world backend engineering concepts including CRUD operations, user authentication, relationships, and scalable project structure.
+Nocturne is a small social space for sharing thoughts and finding interesting ideas. The FastAPI backend serves the responsive web app directly, so you can run both with one command.
 
-📦 Features
-User authentication (JWT-based login system)
-Secure password hashing
-CRUD operations for posts
-Voting system (like/upvote functionality)
-SQLAlchemy ORM integration
-PostgreSQL database support
-Alembic migrations
-Modular router structure (auth, users, posts, votes)
-Environment variable configuration (.env support)
-API documentation via Swagger UI
-🏗️ Tech Stack
-Python 3.10+
-FastAPI
-PostgreSQL
-SQLAlchemy
-Alembic
-Pydantic
-OAuth2 + JWT
-Uvicorn
-📁 Project Structure
+## Screenshots
+
+| Sign in | Community feed |
+| --- | --- |
+| ![Nocturne sign-in page](docs/screenshots/sign-in.png) | ![Nocturne community feed](docs/screenshots/community-feed.png) |
+
+| Dark mode |
+| --- |
+| ![Nocturne community feed in dark mode](docs/screenshots/dark-mode.png) |
+
+The feed screenshots use sample preview data.
+
+## Run it in two steps
+
+Before starting, make sure Python dependencies are installed, PostgreSQL is running, and the root `.env` file contains the database and authentication settings used by `app/config.py`.
+
+1. From the repository root, start the app:
+
+   ```powershell
+   .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+   ```
+
+2. Open **http://127.0.0.1:8000** in your browser. The interactive API docs are at **http://127.0.0.1:8000/docs**.
+
+## What you can do
+
+- Create an account and sign in with JWT authentication.
+- Browse and search the community feed.
+- Write, edit, and delete your own posts.
+- Like posts and revisit them in **Liked posts**.
+- Switch between light and dark themes; your theme choice is saved in the browser.
+- Use the responsive interface on desktop and mobile.
+
+## Project structure
+
+```text
 app/
-│
-├── main.py
-├── database.py
-├── models/
-├── schemas/
-├── routers/
-│   ├── auth.py
-│   ├── users.py
-│   ├── posts.py
-│   └── votes.py
-├── utils/
-└── config/
-⚙️ Installation & Setup
-1. Clone the repository
-git clone https://github.com/your-username/fastapi-project.git
-cd fastapi-project
-2. Create virtual environment
-python -m venv venv
-source venv/bin/activate   # Mac/Linux
-venv\Scripts\activate      # Windows
-3. Install dependencies
-pip install -r requirements.txt
-4. Setup environment variables
-
-Create a .env file:
-
-DATABASE_URL=postgresql://user:password@localhost:5432/dbname
-SECRET_KEY=your_secret_key
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-🗄️ Run database migrations
-alembic upgrade head
-▶️ Run the server
-uvicorn app.main:app --reload
-📍 API Documentation
-
-Once running, visit:
-
-Swagger UI: http://127.0.0.1:8000/docs
-ReDoc: http://127.0.0.1:8000/redoc
-
-🖥️ Frontend MVP
-
-The Nocturne frontend in `frontend/` is served directly by FastAPI. It includes a searchable community feed, personal and liked-post collections, and a persistent light/dark theme toggle. The authenticated `GET /vote/liked` endpoint returns the signed-in user's liked posts with vote counts. Start the project with one command:
-
-```powershell
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+  main.py             FastAPI app and frontend hosting
+  models.py           SQLAlchemy models
+  schemas.py          Request and response schemas
+  routers/
+    auth.py           Login and token creation
+    post.py           Post feed and CRUD endpoints
+    user.py           User registration and profile endpoint
+    vote.py           Voting and liked-post endpoints
+frontend/
+  index.html          Nocturne pages and app structure
+  app.js              Frontend behavior and API integration
+  styles.css          Responsive light and dark themes
+tests/                API tests
 ```
 
-Open http://127.0.0.1:8000. The API documentation remains at http://127.0.0.1:8000/docs. The frontend supports account creation and sign-in, searchable community posts, creating and editing your posts, deleting, and voting.
+## Tech
 
-The vote endpoint does not return a user's existing votes, so liked state is kept in that browser and existing votes may only be detected when the API rejects a duplicate like.
-🔐 Authentication Flow
-Register a user
-Login to receive JWT token
-Use token in Authorization header:
-Bearer <your_token>
-🧠 What I learned building this
-How real backend systems are structured
-How authentication works under the hood
-How relational databases connect to APIs
-How to design scalable FastAPI projects
-How to manage migrations and schema changes
-🚧 Future Improvements
-Docker containerization
-Unit & integration testing
-CI/CD pipeline
-Cloud deployment
-Rate limiting
-File upload system
-📜 License
-
-This project is for educational and portfolio purposes.
+FastAPI, PostgreSQL, SQLAlchemy, Pydantic, Alembic, JWT authentication, and plain HTML/CSS/JavaScript.
