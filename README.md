@@ -67,7 +67,7 @@ ReDoc: http://127.0.0.1:8000/redoc
 
 🖥️ Frontend MVP
 
-The Postmark frontend in `frontend/` is served directly by FastAPI. Start the project with one command:
+The Nocturne frontend in `frontend/` is served directly by FastAPI. It includes a searchable community feed, personal and liked-post collections, and a persistent light/dark theme toggle. The authenticated `GET /vote/liked` endpoint returns the signed-in user's liked posts with vote counts. Start the project with one command:
 
 ```powershell
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload

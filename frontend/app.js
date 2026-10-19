@@ -7,6 +7,7 @@
     apiUrl: normalizeApiUrl(localStorage.getItem("postmarkApiUrl") || API_DEFAULT),
     token: localStorage.getItem("postmarkToken"),
     email: localStorage.getItem("postmarkEmail") || "",
+    theme: localStorage.getItem("postmarkTheme") === "dark" ? "dark" : "light",
     view: "feed",
     posts: [],
     skip: 0,
@@ -103,6 +104,22 @@
     els.feedStatus.textContent = message || "";
     els.feedStatus.classList.toggle("hidden", !message);
     els.feedStatus.classList.toggle("loading", Boolean(loading));
+  }
+
+  function applyTheme() {
+    const dark = state.theme === "dark";
+    document.documentElement.dataset.theme = state.theme;
+    document.querySelectorAll(".theme-toggle").forEach((button) => {
+      button.textContent = dark ? "☀" : "☾";
+      button.setAttribute("aria-label", `Switch to ${dark ? "light" : "dark"} mode`);
+      button.title = `Switch to ${dark ? "light" : "dark"} mode`;
+    });
+  }
+
+  function toggleTheme() {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("postmarkTheme", state.theme);
+    applyTheme();
   }
 
   class ApiError extends Error {
@@ -213,7 +230,7 @@
       state.posts = [];
     }
     state.loading = true;
-    setFeedStatus(state.skip ? "Loading more posts…" : "Finding the good stuff…", true);
+    setFeedStatus(state.skip ? "Gathering more stories…" : "Looking for a good story…", true);
     els.loadMore.classList.add("hidden");
     els.emptyState.classList.add("hidden");
     try {
@@ -221,6 +238,12 @@
       if (state.view === "mine") {
         response = await api("/posts/mypost");
         state.posts = response.map(normalizePost);
+        state.hasMore = false;
+      } else if (state.view === "liked") {
+        response = await api("/vote/liked");
+        state.posts = response.map(normalizePost);
+        for (const item of state.posts) state.likedIds.add(Number(item.post.id));
+        saveLikedIds();
         state.hasMore = false;
       } else {
         const params = new URLSearchParams({ limit: String(PAGE_SIZE), skip: String(state.skip) });
@@ -298,12 +321,19 @@
     els.postList.classList.toggle("hidden", isEmpty);
     els.loadMore.classList.toggle("hidden", !state.hasMore || state.view !== "feed");
     $("#empty-title").textContent = state.view === "mine"
-      ? "Your story starts here."
-      : (els.search.value.trim() ? "No matching posts yet." : "It’s a little quiet here.");
+      ? "Your field notes begin here."
+      : state.view === "liked"
+        ? "No saved sightings yet."
+        : (els.search.value.trim() ? "No matching sightings." : "The forest is quiet tonight.");
     $("#empty-description").textContent = state.view === "mine"
-      ? "Share a thought and it’ll show up here."
-      : (els.search.value.trim() ? "Try another title, or be the first to write about it." : "Be the first to share a thought with the community.");
-    $(".empty-state .button").classList.toggle("hidden", state.view === "feed" && Boolean(els.search.value.trim()));
+      ? "Share a thought and it’ll find its way here."
+      : state.view === "liked"
+        ? "Follow a thought that catches your eye and find it here later."
+        : (els.search.value.trim() ? "Try another title, or write the first note." : "Be the first to leave a field note.");
+    const emptyAction = $(".empty-state .button");
+    emptyAction.dataset.action = state.view === "liked" ? "browse-feed" : "new-post";
+    emptyAction.innerHTML = state.view === "liked" ? 'Explore the community <span>↗</span>' : 'Write the first post <span>↗</span>';
+    emptyAction.classList.toggle("hidden", state.view === "feed" && Boolean(els.search.value.trim()));
     updateViewLabels();
   }
 
@@ -322,9 +352,17 @@
 
   function updateViewLabels() {
     const mine = state.view === "mine";
-    els.feedEyebrow.textContent = mine ? "YOUR CORNER OF THE COMMUNITY" : "A GOOD DAY TO SHARE";
-    els.feedHeading.innerHTML = mine ? "Your <span>posts</span>" : "The community <span>board</span>";
-    els.feedDescription.textContent = mine ? "Everything you’ve put out into the world." : "A little inspiration from people like you.";
+    const liked = state.view === "liked";
+    els.feedEyebrow.textContent = mine
+      ? "YOUR CORNER OF THE COMMUNITY"
+      : liked ? "KEPT UNDER THE MOON" : "LOOK CLOSER. LISTEN LONGER.";
+    els.feedHeading.innerHTML = mine
+      ? "Your <span>field notes</span>"
+      : liked ? "Your <span>saved sightings</span>" : "The <span>night watch</span>";
+    els.feedDescription.textContent = mine
+      ? "Everything you’ve put out into the night."
+      : liked ? "Thoughts worth finding again."
+        : "A closer look at what’s on people’s minds.";
     document.querySelectorAll("[data-view]").forEach((button) => {
       const active = button.dataset.view === state.view;
       button.classList.toggle("active", active);
@@ -355,7 +393,7 @@
       showApp();
       await loadFeed(true);
       if (els.appShell.classList.contains("hidden")) return;
-      showToast(els.authForm.dataset.mode === "register" ? "Your account is ready. Welcome to Postmark!" : "Welcome back.");
+      showToast(els.authForm.dataset.mode === "register" ? "Your account is ready. Welcome to Nocturne." : "Welcome back.");
       els.authPassword.value = "";
     } catch (error) {
       els.authError.textContent = error.message || "We couldn’t sign you in. Please try again.";
@@ -447,6 +485,9 @@
       const entry = state.posts.find((item) => Number(item.post.id) === postId);
       if (entry && entry.votes !== null) entry.votes = Math.max(0, entry.votes + (wasLiked ? -1 : 1));
       else if (entry) entry.votes = wasLiked ? 0 : 1;
+      if (state.view === "liked" && wasLiked) {
+        state.posts = state.posts.filter((item) => Number(item.post.id) !== postId);
+      }
       renderPosts();
     } catch (error) {
       if (error.status === 409 && !wasLiked) {
@@ -463,9 +504,9 @@
   }
 
   function setView(view) {
-    if (!["feed", "mine"].includes(view)) return;
+    if (!["feed", "mine", "liked"].includes(view)) return;
     state.view = view;
-    if (view === "mine") els.search.value = "";
+    if (view !== "feed") els.search.value = "";
     loadFeed(true);
   }
 
@@ -491,6 +532,12 @@
         break;
       case "toggle-settings":
         els.settingsPopover.classList.toggle("hidden");
+        break;
+      case "toggle-theme":
+        toggleTheme();
+        break;
+      case "browse-feed":
+        setView("feed");
         break;
       case "save-api-url":
         if (setApiUrl(target.closest(".api-config-row").querySelector("input").value)) {
@@ -558,6 +605,7 @@
 
   els.authApiUrl.value = state.apiUrl;
   els.appApiUrl.value = state.apiUrl;
+  applyTheme();
   updateAuthMode(false);
   if (state.token) {
     loadLikedIds();

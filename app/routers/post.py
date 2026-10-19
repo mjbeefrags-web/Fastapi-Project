@@ -6,7 +6,7 @@ from .. import oauth2
 from .. import models
 from .. import schemas
 from ..database import get_db
-from sqlalchemy import  func
+from sqlalchemy import func, update
 
 router=APIRouter(prefix="/posts",tags=["Posts"])
 
@@ -58,7 +58,15 @@ def update_item(post_id:int,post:schemas.Post,db:Session = Depends(get_db), curr
     if  existing_post.owner_id != current_user.id:  
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail= "Not Authorized to preform this acction")
     
-    post_query.update(post.dict(exclude_unset=True), synchronize_session=False)
+    update_statement = (
+        update(models.post)
+        .where(models.post.id == post_id)
+        .values(title=post.title, content=post.content)
+    )
+    if "published" in post.model_fields_set:
+        update_statement = update_statement.values(published=post.published)
+
+    db.execute(update_statement.execution_options(synchronize_session=False))
     db.commit()
     db.refresh(existing_post)
     updated=post_query.first()
