@@ -64,6 +64,18 @@ Once running, visit:
 
 Swagger UI: http://127.0.0.1:8000/docs
 ReDoc: http://127.0.0.1:8000/redoc
+
+🖥️ Frontend MVP
+
+The Postmark frontend in `frontend/` is served directly by FastAPI. Start the project with one command:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
+
+Open http://127.0.0.1:8000. The API documentation remains at http://127.0.0.1:8000/docs. The frontend supports account creation and sign-in, searchable community posts, creating and editing your posts, deleting, and voting.
+
+The vote endpoint does not return a user's existing votes, so liked state is kept in that browser and existing votes may only be detected when the API rejects a duplicate like.
 🔐 Authentication Flow
 Register a user
 Login to receive JWT token

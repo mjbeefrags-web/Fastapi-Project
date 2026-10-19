@@ -2,8 +2,11 @@ from fastapi import FastAPI
 
 from .routers import auth, post,vote,user
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
+
 from .database import engine , sessionLocal,get_db
 from . import models
+from fastapi.staticfiles import StaticFiles
 
 models.Base.metadata.create_all(bind=engine)
 origins=["*"]
@@ -17,12 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
-    return{"message":"hello world"}
-
 app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
 app.include_router(vote.router)
 
+frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
+app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")

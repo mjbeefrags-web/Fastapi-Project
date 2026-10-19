@@ -1,41 +1,35 @@
 #class for Items that takes in the needed data for an item
-from pydantic import BaseModel,EmailStr,Field  
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 from datetime import datetime
 from typing import Optional
 
 
-class Post(BaseModel):
+class ORMModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+
+class Post(ORMModel):
     title:str
     content:str
     published:bool |None=None
-    
-    class from_attributes:
-        orm_mode=True
-
-class PostVote(BaseModel):
-    post:PostOut
-    votes:int
-
-    class from_attributes:
-        orm_mode=True
 
 
-class UserOut(BaseModel):
+class UserOut(ORMModel):
     email:EmailStr
     id:int
     created_at:datetime
-    
-
-
-    class from_attributes:
-        orm_mode=True
-
 
 
 class PostOut(Post):
     id:int
     owner_id:int
+    created_at:datetime
     owner:UserOut
+
+
+class PostVote(ORMModel):
+    post:PostOut
+    votes:int
 
 
 class UserCreate(BaseModel):

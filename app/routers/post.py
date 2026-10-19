@@ -58,7 +58,7 @@ def update_item(post_id:int,post:schemas.Post,db:Session = Depends(get_db), curr
     if  existing_post.owner_id != current_user.id:  
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail= "Not Authorized to preform this acction")
     
-    post_query.update(**post.dict(exclude_unset=True), synchronize_session=False)
+    post_query.update(post.dict(exclude_unset=True), synchronize_session=False)
     db.commit()
     db.refresh(existing_post)
     updated=post_query.first()
@@ -78,7 +78,7 @@ def get_post(post_id: int, db: Session = Depends(get_db), current_user:int  =  D
 
 
 #delete a post with id 
-@router.delete("/{post_id}")
+@router.delete("/{post_id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(post_id: int, db: Session = Depends(get_db), current_user=  Depends(oauth2.get_current_user)):
 
     post_query = db.query(models.post).filter(models.post.id == post_id)
@@ -92,6 +92,4 @@ def delete_post(post_id: int, db: Session = Depends(get_db), current_user=  Depe
 
     post_query.delete(synchronize_session=False)
     db.commit()
-    return {"message": "Post deleted successfully"}
-
-
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

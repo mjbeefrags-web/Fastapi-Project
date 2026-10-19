@@ -53,8 +53,54 @@ def test_create_post(authorized_client , test_user , test_posts, title , content
     assert created_post.owner_id == test_user['id']
 
 def test_unauthorized_user_create_post(client,test_user,test_posts):
-    client.post("/posts/",)
+    res = client.post("/posts/", json={"title":"test title","content":"test content","published":True})
+
+    assert res.status_code == 401
+
+
+
+def test_unauthorized_user_delete_Post(client, test_user, test_posts):
+    res = client.delete(
+        f"/posts/{test_posts[0].id}")
+    assert res.status_code == 401
+
+
+def test_delete_post_success(authorized_client,test_posts,test_user):
+    res = authorized_client.delete(
+            f"/posts/{test_posts[0].id}")
+    assert res.status_code == 204
+
+
+def test_delete_post_non_exist(authorized_client, test_user, test_posts):
+    res = authorized_client.delete(
+        f"/posts/8000000")
+
+    assert res.status_code == 404
+
+def test_delete_other_user_post(authorized_client, test_user, test_posts):
+    res = authorized_client.delete(
+                f"/posts/{test_posts[3].id}")
+    assert res.status_code == 403
+
+
+#updtae posts
+
+def test_update_post(authorized_client,test_posts,test_user):
+    data = {
+        "title": "updated title",
+        "content": "updated content",
+        "published": True
+    }
+    res = authorized_client.put(f"/posts/{test_posts[0].id}", json=data)
+    print(res.json())
+    #updated_post = schemas.PostOut(**res.json())
+    assert res.status_code == 200
+    #assert updated_post.title == data['title']
 
 
 
 
+def test_unauthorized_user_update_post(client, test_user, test_posts):
+    res = client.put(
+        f"/posts/{test_posts[0].id}")
+    assert res.status_code == 401

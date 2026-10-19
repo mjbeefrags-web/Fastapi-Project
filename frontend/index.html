@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f7f4">
+    <meta name="description" content="A thoughtful space to share ideas and discover what people are saying.">
+    <title>Postmark — a space for your thoughts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="auth-screen" id="auth-screen">
+      <main class="auth-layout">
+        <section class="auth-panel">
+          <a class="brand" href="#" aria-label="Postmark home">
+            <span class="brand-mark" aria-hidden="true">p.</span>
+            <span>postmark</span>
+          </a>
+          <div class="auth-copy">
+            <span class="eyebrow"><span class="status-dot"></span> YOUR IDEAS, IN GOOD COMPANY</span>
+            <h1>A little space<br>to <span>say something.</span></h1>
+            <p>Share what’s on your mind, find your people, and join the conversation.</p>
+          </div>
+          <div class="auth-card">
+            <div class="auth-card-heading">
+              <div>
+                <h2 id="auth-title">Welcome back</h2>
+                <p id="auth-subtitle">Sign in to pick up where you left off.</p>
+              </div>
+              <span class="sparkle" aria-hidden="true">✳</span>
+            </div>
+            <form id="auth-form">
+              <label for="auth-email">Email address</label>
+              <input id="auth-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+              <label for="auth-password">Password</label>
+              <input id="auth-password" name="password" type="password" autocomplete="current-password" maxlength="72" placeholder="Enter your password" required>
+              <p class="form-error" id="auth-error" role="alert"></p>
+              <button class="button button-primary button-wide" id="auth-submit" type="submit">Sign in <span aria-hidden="true">↗</span></button>
+            </form>
+            <p class="auth-switch"><span id="auth-switch-label">New around here?</span> <button class="text-button" id="auth-switch" type="button">Create an account</button></p>
+          </div>
+          <details class="api-config auth-api-config">
+            <summary>Connect to your API</summary>
+            <div class="api-config-fields">
+              <label for="auth-api-url">Backend URL</label>
+              <div class="api-config-row">
+                <input id="auth-api-url" type="url" value="http://127.0.0.1:8000" spellcheck="false">
+                <button class="button button-small button-soft" data-action="save-api-url" type="button">Save</button>
+              </div>
+              <span>Use the address where your FastAPI server is running.</span>
+            </div>
+          </details>
+          <footer class="auth-footer">A calmer corner of the internet. <span>© Postmark</span></footer>
+        </section>
+        <aside class="auth-visual" aria-label="A preview of the Postmark community">
+          <div class="visual-orb orb-one"></div>
+          <div class="visual-orb orb-two"></div>
+          <div class="visual-topline"><span>GOOD THOUGHTS, SHARED</span><span class="visual-spark">✳</span></div>
+          <div class="preview-note note-back">
+            <div class="preview-author"><span class="avatar avatar-lilac">J</span><span><b>Jamie Lee</b><small>Designing a little more freely</small></span><span class="note-menu">···</span></div>
+            <p>Making things just because they make you happy is a pretty good reason. 🌱</p>
+            <div class="preview-reactions"><span>♡ &nbsp;18</span><span>↗ &nbsp;Share</span></div>
+          </div>
+          <div class="preview-note note-front">
+            <div class="preview-author"><span class="avatar avatar-coral">A</span><span><b>Alex Morgan</b><small>A thought for today · 2m</small></span><span class="note-menu">···</span></div>
+            <p>Small reminder: you don’t have to have it all figured out to take the next step.</p>
+            <div class="preview-reactions"><span class="reaction-loved">♥ &nbsp;24</span><span>↗ &nbsp;Share</span></div>
+          </div>
+          <div class="visual-caption"><span class="caption-line"></span><span>Ideas are better when they’re shared.</span></div>
+          <div class="visual-sticker sticker-sun" aria-hidden="true">✳</div>
+          <div class="visual-sticker sticker-heart" aria-hidden="true">♡</div>
+        </aside>
+      </main>
+    </div>
+
+    <div class="app-shell hidden" id="app-shell">
+      <aside class="sidebar">
+        <a class="brand sidebar-brand" href="#" aria-label="Postmark home">
+          <span class="brand-mark" aria-hidden="true">p.</span>
+          <span>postmark</span>
+        </a>
+        <div class="sidebar-label">YOUR SPACE</div>
+        <nav class="side-nav" aria-label="Main navigation">
+          <button class="nav-item active" data-view="feed" type="button"><span class="nav-icon">▤</span> Community feed</button>
+          <button class="nav-item" data-view="mine" type="button"><span class="nav-icon">▧</span> My posts</button>
+        </nav>
+        <div class="sidebar-note">
+          <span class="note-icon">✳</span>
+          <b>Your voice belongs here.</b>
+          <p>There’s no perfect way to start. Just start with what’s on your mind.</p>
+          <button class="text-button" data-action="new-post" type="button">Write a post <span>↗</span></button>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="account-chip">
+            <span class="avatar avatar-current" id="sidebar-avatar">P</span>
+            <span class="account-email" id="sidebar-email">Your account</span>
+            <button class="icon-button" data-action="logout" type="button" aria-label="Sign out" title="Sign out">↗</button>
+          </div>
+          <p class="sidebar-legal">A place for good thoughts. <span>·</span> v1.0</p>
+        </div>
+      </aside>
+
+      <div class="app-main">
+        <header class="topbar">
+          <div class="mobile-brand"><span class="brand-mark">p.</span><span>postmark</span></div>
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" placeholder="Search post titles…" aria-label="Search post titles">
+            <kbd>⌘ K</kbd>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button settings-button" data-action="toggle-settings" type="button" aria-label="API settings" title="API settings">⚙</button>
+            <button class="icon-button mobile-logout" data-action="logout" type="button" aria-label="Sign out" title="Sign out">⇥</button>
+            <button class="button button-primary top-compose" data-action="new-post" type="button"><span>＋</span> Write a post</button>
+          </div>
+        </header>
+        <section class="settings-popover hidden" id="settings-popover" aria-label="API settings">
+          <div><b>Backend connection</b><span>Set the URL for your FastAPI server.</span></div>
+          <div class="api-config-row">
+            <input id="app-api-url" type="url" value="http://127.0.0.1:8000" spellcheck="false" aria-label="Backend URL">
+            <button class="button button-small button-soft" data-action="save-api-url" type="button">Save</button>
+          </div>
+        </section>
+
+        <main class="content-grid">
+          <section class="feed-column">
+            <div class="welcome-block">
+              <div>
+                <span class="eyebrow" id="feed-eyebrow">A GOOD DAY TO SHARE</span>
+                <h1 id="feed-heading">The community <span>board</span></h1>
+                <p id="feed-description">A little inspiration from people like you.</p>
+              </div>
+              <div class="welcome-decoration" aria-hidden="true"><span>✳</span><i></i><b></b></div>
+            </div>
+
+            <button class="composer-prompt" data-action="new-post" type="button">
+              <span class="avatar avatar-current" id="composer-avatar">P</span>
+              <span>Got something on your mind?</span>
+              <span class="composer-plus">＋</span>
+            </button>
+
+            <div class="feed-toolbar">
+              <div class="feed-tabs" role="tablist" aria-label="Post view">
+                <button class="feed-tab active" data-view="feed" role="tab" aria-selected="true" type="button">For you</button>
+                <button class="feed-tab" data-view="mine" role="tab" aria-selected="false" type="button">Your posts</button>
+              </div>
+              <button class="icon-button refresh-button" data-action="refresh" type="button" aria-label="Refresh posts" title="Refresh">↻</button>
+            </div>
+            <div class="feed-status hidden" id="feed-status" role="status"></div>
+            <div class="post-list" id="post-list" aria-live="polite"></div>
+            <div class="empty-state hidden" id="empty-state">
+              <span class="empty-illustration">✳</span>
+              <h2 id="empty-title">It’s a little quiet here.</h2>
+              <p id="empty-description">Be the first to share a thought with the community.</p>
+              <button class="button button-primary" data-action="new-post" type="button">Write the first post <span>↗</span></button>
+            </div>
+            <button class="button button-soft load-more hidden" id="load-more" data-action="load-more" type="button">Load more posts</button>
+            <div class="feed-footer"><span class="footer-star">✳</span> You’re all caught up. Keep being you.</div>
+          </section>
+
+          <aside class="right-rail">
+            <section class="rail-card profile-card">
+              <div class="profile-card-top"><span>YOUR LITTLE CORNER</span><span class="profile-sparkle">✳</span></div>
+              <span class="avatar avatar-large avatar-current" id="profile-avatar">P</span>
+              <h2 id="profile-email">Your profile</h2>
+              <p>Glad you’re here. Make yourself at home.</p>
+              <button class="button button-outline button-wide" data-view="mine" type="button">See your posts <span>→</span></button>
+            </section>
+
+            <section class="rail-card tip-card">
+              <div class="rail-card-heading"><span class="tip-icon">✦</span><span>A gentle reminder</span></div>
+              <p>Good conversations start with curiosity. Be kind to the human on the other side.</p>
+            </section>
+
+            <section class="rail-card connection-card">
+              <span class="connection-label"><span class="status-dot"></span> YOUR CONNECTION</span>
+              <b>Likes are a little local</b>
+              <p>This API doesn’t return which posts you’ve already liked. Your like state is remembered in this browser.</p>
+            </section>
+
+            <div class="rail-footer">Made for the things worth saying. <span>✳</span></div>
+          </aside>
+        </main>
+      </div>
+    </div>
+
+    <dialog class="post-dialog" id="post-dialog" aria-labelledby="dialog-title">
+      <form id="post-form" class="post-form">
+        <div class="dialog-header">
+          <div><span class="eyebrow" id="dialog-eyebrow">PUT IT OUT THERE</span><h2 id="dialog-title">Write a post</h2></div>
+          <button class="icon-button" data-action="close-dialog" type="button" aria-label="Close">×</button>
+        </div>
+        <label for="post-title">Title</label>
+        <input id="post-title" name="title" maxlength="200" placeholder="Give your thought a title…" required>
+        <label for="post-content">Your post</label>
+        <textarea id="post-content" name="content" rows="7" placeholder="Start wherever you are…" required></textarea>
+        <label class="published-toggle"><input id="post-published" name="published" type="checkbox" checked><span class="custom-check"></span><span>Share with the community</span></label>
+        <p class="form-error" id="post-error" role="alert"></p>
+        <div class="dialog-actions"><button class="button button-soft" data-action="close-dialog" type="button">Cancel</button><button class="button button-primary" id="post-submit" type="submit">Publish post <span>↗</span></button></div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
